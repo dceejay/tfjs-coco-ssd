@@ -1,7 +1,12 @@
 <script type="text/html" data-template-name="tensorflowCoco">
     <div class="form-row">
-        <label for="node-input-scoreThreshold"><i class="fa fa-tag"></i> Threshold</label>
+        <label for="node-input-scoreThreshold"><i class="fa fa-signal"></i> Threshold</label>
         <input type="text" id="node-input-scoreThreshold" placeholder="e.g. 0 - 1">
+    </div>
+    <div class="form-row">
+        <label for="node-input-passthru"><i class="fa fa-picture-o"></i> Image</label>
+        <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:20px; vertical-align:baseline;">
+        pass original image through as <code>msg.image</code>.
     </div>
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
@@ -44,7 +49,8 @@
         defaults: {
             name: { value: "" },
             model: { value: "" },
-            scoreThreshold: { value: 0.5 }
+            scoreThreshold: { value: 0.5 },
+            passthru: {value: false }
         },
         inputs: 1,
         outputs: 1,

@@ -10,6 +10,7 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, n);
         this.scoreThreshold = n.scoreThreshould;
         this.maxDetections = n.maxDetections;
+        this.passthru = n.passthru || false;
         var node = this;
 
         RED.httpNode.use(compression());
@@ -37,8 +38,8 @@ module.exports = function (RED) {
                         i = i - 1;
                     }
                 }
-                for (var i=0; i<msg.payload.length; i++) {
-                    msg.classes[msg.payload[i].class] = (msg.classes[msg.payload[i].class] || 0 ) + 1;
+                for (var j=0; j<msg.payload.length; j++) {
+                    msg.classes[msg.payload[j].class] = (msg.classes[msg.payload[j].class] || 0 ) + 1;
                 }
                 node.send(msg);
             }
@@ -46,6 +47,7 @@ module.exports = function (RED) {
                 if (node.ready) {
                     var p = msg.payload;
                     if (typeof p === "string") { p = fs.readFileSync(p); }
+                    if (node.passthru === true) { msg.image = p; }
                     reco(tf.node.decodeImage(p));
                 }
             } catch (error) {
