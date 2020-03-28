@@ -4,6 +4,12 @@ module.exports = function (RED) {
         var fs = require('fs');
         var express = require("express");
         var compression = require("compression");
+
+        /* suggestion from https://github.com/tensorflow/tfjs/issues/2029 */
+        const nodeFetch = require('node-fetch'); // <<--- ADD
+        global.fetch = nodeFetch; // <<--- ADD
+        /* ************************************************************** */
+
         var tf = require('@tensorflow/tfjs-node');
         var cocoSsd = require('@tensorflow-models/coco-ssd');
         
@@ -11,13 +17,14 @@ module.exports = function (RED) {
         this.scoreThreshold = n.scoreThreshould;
         this.maxDetections = n.maxDetections;
         this.passthru = n.passthru || false;
+        this.modelUrl = n.modelUrl || undefined; // "http://localhost:1880/coco/model.json"
         var node = this;
 
         RED.httpNode.use(compression());
         RED.httpNode.use('/coco', express.static(__dirname + '/models/coco-ssd'));
 
         async function loadModel() {
-            node.model = await cocoSsd.load({modelUrl: "http://localhost:1880/coco/model.json"});
+            node.model = await cocoSsd.load({modelUrl: node.modelUrl});
             node.ready = true;
             node.status({fill:'green', shape:'dot', text:'Model ready'});
         }

@@ -4,6 +4,10 @@
         <input type="text" id="node-input-scoreThreshold" placeholder="e.g. 0 - 1">
     </div>
     <div class="form-row">
+        <label for="node-input-modelUrl"><i class="fa fa-globe"></i> Model Url</label>
+        <input type="text" id="node-input-modelUrl" placeholder="leave blank to load from internet">
+    </div>
+    <div class="form-row">
         <label for="node-input-passthru"><i class="fa fa-picture-o"></i> Image</label>
         <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:20px; vertical-align:baseline;">
         pass original image through as <code>msg.image</code>.
@@ -48,9 +52,9 @@
         category: 'analysis-function',
         defaults: {
             name: { value: "" },
-            model: { value: "" },
+            modelUrl: { value: "http://localhost:1880/coco/model.json" },
             scoreThreshold: { value: 0.5 },
-            passthru: {value: false }
+            passthru: { value: false }
         },
         inputs: 1,
         outputs: 1,
