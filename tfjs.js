@@ -31,31 +31,46 @@ module.exports = function (RED) {
         node.status({fill:'yellow', shape:'ring', text:'Loading model...'});
         loadModel();
 
-        node.on('input', function (msg) {
-            async function reco(img) {
-                msg.maxDetections = msg.maxDetections || node.maxDetections || 20;
-                msg.payload = await node.model.detect(img, msg.maxDetections);
-                msg.shape = img.shape;
-                msg.classes = {};
-                msg.scoreThreshold = msg.scoreThreshold || node.scoreThreshold || 0.5;
-                
-                for (var i=0; i<msg.payload.length; i++) {
-                    if (msg.payload[i].score < msg.scoreThreshold) {
-                        msg.payload.splice(i,1);
-                        i = i - 1;
-                    }
+        async function getImage(m) {
+            fetch(m.payload)
+                .then(r => r.buffer())
+                .then(buf => m.payload = buf)
+                .then(function() {reco(m) });
+        }
+
+        async function reco(m) {
+            if (node.passthru === true) { m.image = m.payload; }
+            var img = tf.node.decodeImage(m.payload);
+            m.maxDetections = m.maxDetections || node.maxDetections || 20;
+            m.payload = await node.model.detect(img, m.maxDetections);
+            m.shape = img.shape;
+            m.classes = {};
+            m.scoreThreshold = m.scoreThreshold || node.scoreThreshold || 0.5;
+            
+            for (var i=0; i<m.payload.length; i++) {
+                if (m.payload[i].score < m.scoreThreshold) {
+                    m.payload.splice(i,1);
+                    i = i - 1;
                 }
-                for (var j=0; j<msg.payload.length; j++) {
-                    msg.classes[msg.payload[j].class] = (msg.classes[msg.payload[j].class] || 0 ) + 1;
-                }
-                node.send(msg);
             }
+            for (var j=0; j<m.payload.length; j++) {
+                m.classes[m.payload[j].class] = (m.classes[m.payload[j].class] || 0 ) + 1;
+            }
+            node.send(m);
+        }
+
+        node.on('input', function (msg) {
             try {
                 if (node.ready) {
-                    var p = msg.payload;
-                    if (typeof p === "string") { p = fs.readFileSync(p); }
-                    if (node.passthru === true) { msg.image = p; }
-                    reco(tf.node.decodeImage(p));
+                    msg.image = msg.payload;
+                    if (typeof msg.payload === "string") { 
+                        if (msg.payload.startsWith("http")) {
+                            getImage(msg);
+                            return;
+                        }
+                        else { msg.image = fs.readFileSync(msg.payload); }
+                    }
+                    reco(msg);
                 }
             } catch (error) {
                 node.error(error, msg);
