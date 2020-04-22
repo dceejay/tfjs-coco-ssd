@@ -57,6 +57,7 @@ module.exports = function (RED) {
                 m.classes[m.payload[j].class] = (m.classes[m.payload[j].class] || 0 ) + 1;
             }
             node.send(m);
+            tf.dispose(img);
         }
 
         node.on('input', function (msg) {

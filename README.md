@@ -1,5 +1,5 @@
 # node-red-contrib-tfjs-coco-ssd
-
+[![platform](https://img.shields.io/badge/platform-Node--RED-red)](https://nodered.org)
 A Node-RED node for Object Detection using TensorFlowJS CoCo SSD.
 
 **NOTE**: The Tensorflow.js library will be installed automatically.  However Tensorflow.js is only available on certain OS/Hardware/processor combinations.  Therfore it might not automatically work on all platforms, if you are unlucky...
@@ -13,8 +13,9 @@ Either use the Node-RED Menu - Manage Palette option, or run the following comma
 ## Overview
 
 This node runs the CoCo Single Shot object detector on a ***jpg image***, delivered via an ```msg.payload``` in one of the following formats:
-+ As a string, that represents a file path
-+ As a buffer
++ As a string, that represents a file path to a jpg file.
++ As a buffer of a jpg.
++ As an https url that returns a jpg.
 
 The [CoCo-ssd](https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd) model is loaded locally so it should work offline.  
 
