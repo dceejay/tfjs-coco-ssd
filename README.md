@@ -1,5 +1,6 @@
 # node-red-contrib-tfjs-coco-ssd
 [![platform](https://img.shields.io/badge/platform-Node--RED-red)](https://nodered.org)
+
 A Node-RED node for Object Detection using TensorFlowJS CoCo SSD.
 
 **NOTE**: The Tensorflow.js library will be installed automatically.  However Tensorflow.js is only available on certain OS/Hardware/processor combinations.  Therfore it might not automatically work on all platforms, if you are unlucky...

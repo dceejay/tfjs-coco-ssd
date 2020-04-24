@@ -16,7 +16,8 @@
     "keywords": [
         "node-red",
         "tensorflow",
-        "tensorflowjs"
+        "tensorflowjs",
+        "tfjs"
     ],
     "node-red": {
         "nodes": {
