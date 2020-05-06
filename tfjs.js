@@ -69,7 +69,7 @@ module.exports = function (RED) {
                             getImage(msg);
                             return;
                         }
-                        else { msg.image = fs.readFileSync(msg.payload); }
+                        else { msg.payload = fs.readFileSync(msg.payload); }
                     }
                     reco(msg);
                 }
