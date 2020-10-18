@@ -12,7 +12,7 @@ module.exports = function (RED) {
 
         var tf = require('@tensorflow/tfjs-node');
         var cocoSsd = require('@tensorflow-models/coco-ssd');
-        
+
         RED.nodes.createNode(this, n);
         this.scoreThreshold = n.scoreThreshould;
         this.maxDetections = n.maxDetections;
@@ -46,7 +46,7 @@ module.exports = function (RED) {
             m.shape = img.shape;
             m.classes = {};
             m.scoreThreshold = m.scoreThreshold || node.scoreThreshold || 0.5;
-            
+
             for (var i=0; i<m.payload.length; i++) {
                 if (m.payload[i].score < m.scoreThreshold) {
                     m.payload.splice(i,1);
@@ -64,10 +64,13 @@ module.exports = function (RED) {
             try {
                 if (node.ready) {
                     msg.image = msg.payload;
-                    if (typeof msg.payload === "string") { 
+                    if (typeof msg.payload === "string") {
                         if (msg.payload.startsWith("http")) {
                             getImage(msg);
                             return;
+                        }
+                        else if (msg.payload.startsWith("data:image/jpeg")) {
+                            msg.payload = Buffer.from(msg.payload.split(";base64,")[1], 'base64');
                         }
                         else { msg.image = fs.readFileSync(msg.payload); }
                     }

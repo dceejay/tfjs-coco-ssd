@@ -13,12 +13,13 @@ Either use the Node-RED Menu - Manage Palette option, or run the following comma
 
 ## Overview
 
-This node runs the CoCo Single Shot object detector on a ***jpg image***, delivered via an ```msg.payload``` in one of the following formats:
+This node runs the CoCo Single Shot object detector on a ***jpeg image***, delivered via an ```msg.payload``` in one of the following formats:
 + As a string, that represents a file path to a jpg file.
 + As a buffer of a jpg.
 + As an https url that returns a jpg.
++ As an html data:image/jpeg;base64, string
 
-The [CoCo-ssd](https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd) model is loaded locally so it should work offline.  
+The [CoCo-ssd](https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd) model is loaded locally so it should work offline.
 
 The model is currently trained to recognize the following object classes in an image:
 
