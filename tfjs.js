@@ -2,7 +2,10 @@
 module.exports = function (RED) {
     function TensorFlowCoCo(n) {
         var fs = require('fs');
+        var path = require('path');
+        var jpeg = require('jpeg-js');
         var express = require("express");
+        var pureimage = require("pureimage");
         var compression = require("compression");
 
         /* suggestion from https://github.com/tensorflow/tfjs/issues/2029 */
@@ -16,12 +19,18 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, n);
         this.scoreThreshold = n.scoreThreshould;
         this.maxDetections = n.maxDetections;
-        this.passthru = n.passthru || false;
+        this.passthru = n.passthru || "false";
         this.modelUrl = n.modelUrl || undefined; // "http://localhost:1880/coco/model.json"
         var node = this;
 
         RED.httpNode.use(compression());
         RED.httpNode.use('/coco', express.static(__dirname + '/models/coco-ssd'));
+
+        async function loadFont() {
+            node.fnt = pureimage.registerFont(path.join(__dirname,'./SourceSansPro-Regular.ttf'),'Source Sans Pro');
+            node.fnt.load();
+        }
+        loadFont();
 
         async function loadModel() {
             node.model = await cocoSsd.load({modelUrl: node.modelUrl});
@@ -39,8 +48,12 @@ module.exports = function (RED) {
         }
 
         async function reco(m) {
-            if (node.passthru === true) { m.image = m.payload; }
+            var jimg;
+
+            if (node.passthru === "bbox") { jimg = jpeg.decode(m.payload); }
+            if (node.passthru === "true") { m.image = m.payload; }
             var img = tf.node.decodeImage(m.payload);
+
             m.maxDetections = m.maxDetections || node.maxDetections || 20;
             m.payload = await node.model.detect(img, m.maxDetections);
             m.shape = img.shape;
@@ -52,10 +65,26 @@ module.exports = function (RED) {
                     m.payload.splice(i,1);
                     i = i - 1;
                 }
+                m.classes[m.payload[i].class] = (m.classes[m.payload[i].class] || 0 ) + 1;
             }
-            for (var j=0; j<m.payload.length; j++) {
-                m.classes[m.payload[j].class] = (m.classes[m.payload[j].class] || 0 ) + 1;
+
+            if (node.passthru === "bbox") {
+                var pimg = pureimage.make(jimg.width,jimg.height);
+                var ctx = pimg.getContext('2d');
+                ctx.bitmap.data = jimg.data;
+                for (var k=0; k<m.payload.length; k++) {
+                    ctx.fillStyle = 'magenta';
+                    ctx.strokeStyle = 'magenta';
+                    ctx.font = "32pt 'Source Sans Pro'";
+                    ctx.fillText(m.payload[k].class, m.payload[k].bbox[0] + 8, m.payload[k].bbox[1] + 24)
+                    ctx.lineWidth = 5;
+                    ctx.lineJoin = 'bevel';
+                    ctx.rect(m.payload[k].bbox[0], m.payload[k].bbox[1], m.payload[k].bbox[2], m.payload[k].bbox[3]);
+                    ctx.stroke();
+                }
+                m.image = jpeg.encode(pimg,70).data;
             }
+
             node.send(m);
             tf.dispose(img);
         }
@@ -72,7 +101,7 @@ module.exports = function (RED) {
                         else if (msg.payload.startsWith("data:image/jpeg")) {
                             msg.payload = Buffer.from(msg.payload.split(";base64,")[1], 'base64');
                         }
-                        else { msg.image = fs.readFileSync(msg.payload); }
+                        else { msg.payload = fs.readFileSync(msg.payload); }
                     }
                     reco(msg);
                 }

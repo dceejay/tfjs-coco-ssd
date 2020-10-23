@@ -8,9 +8,12 @@
         <input type="text" id="node-input-modelUrl" placeholder="leave blank to load from internet">
     </div>
     <div class="form-row">
-        <label for="node-input-passthru"><i class="fa fa-picture-o"></i> Image</label>
-        <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:20px; vertical-align:baseline;">
-        pass original image through as <code>msg.image</code>.
+        <label for="node-input-passthru"><i class="fa fa-picture-o"></i> Passthru</label>
+        <select type="text" id="node-input-passthru" style="width:70%;">
+            <option value="false">Nothing</option>
+            <option value="true">Original Image</option>
+            <option value="bbox">Annotated Image</option>
+        </select>
     </div>
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
@@ -28,7 +31,7 @@
         <dd>Minimum threshold for a valid detection (0 - 1)</dd>
     </dl>
     <h3>Outputs</h3>
-    <dl class="message-properties">    
+    <dl class="message-properties">
         <dt>payload <span class="property-type">array</span></dt>
         <dd>an array of detected objects, containing :
         <ul><li><code>bbox</code> array, [x,y,width,height]</li>
@@ -36,15 +39,18 @@
             <li><code>score</code> number, 0 -> 1.</li>
         </ul></dd>
         <dt>classes <span class="property-type">object</span></dt>
-        <dd>an object with each class and their counts, e.g. <code>{cat:1,dog:2}</code>.</dd>
+        <dd>an object with each class and their counts, e.g. <code>{dog:3,cat:1}</code>.</dd>
         <dt>shape <span class="property-type">array[3]</span></dt>
         <dd>dimensions of the input image, [x,y,depth].</dd>
         <dt>scoreThreshold <span class="property-type">number</span></dt>
         <dd>the scoreThreshold value used in this detection.</dd>
-    </dl>  
-    <h3>Details</h3> 
-    <p>The configured scoreThreshold can be overridden dynamically 
-        by setting the <code>msg.coreThreshold</code> property.</p>
+        <dt>image <span class="property-type">buffer</span></dt>
+        <dd>(optional) either the original image, or
+        the image annotated with detected bounding boxes.</dd>
+    </dl>
+    <h3>Details</h3>
+    <p>The configured scoreThreshold can be overridden dynamically
+        by setting the <code>msg.scoreThreshold</code> property.</p>
 </script>
 
 <script type="text/javascript">
