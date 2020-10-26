@@ -21,6 +21,7 @@ module.exports = function (RED) {
         this.maxDetections = n.maxDetections;
         this.passthru = n.passthru || "false";
         this.modelUrl = n.modelUrl || undefined; // "http://localhost:1880/coco/model.json"
+        this.lineColour = n.lineColour || "magenta";
         var node = this;
 
         RED.httpNode.use(compression());
@@ -74,8 +75,8 @@ module.exports = function (RED) {
                 var scale = parseInt((jimg.width + jimg.height) / 500 + 0.5);
                 ctx.bitmap.data = jimg.data;
                 for (var k=0; k<m.payload.length; k++) {
-                    ctx.fillStyle = 'magenta';
-                    ctx.strokeStyle = 'magenta';
+                    ctx.fillStyle = node.lineColour;
+                    ctx.strokeStyle = node.lineColour;
                     ctx.font = scale*8+"pt 'Source Sans Pro'";
                     ctx.fillText(m.payload[k].class, m.payload[k].bbox[0] + 4, m.payload[k].bbox[1] - 4)
                     ctx.lineWidth = scale;

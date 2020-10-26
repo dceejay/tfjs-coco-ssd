@@ -15,6 +15,10 @@
             <option value="bbox">Annotated Image</option>
         </select>
     </div>
+    <div class="form-row" id="node-bbox-colour">
+        <label for="node-input-lineColour"><i class="fa fa-paint-brush "></i> Box colour</label>
+        <input type="text" id="node-input-lineColour" placeholder="HTML5 colour or #rrggbb">
+    </div>
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -60,7 +64,8 @@
             name: { value: "" },
             modelUrl: { value: "http://localhost:1880"+RED.settings.httpNodeRoot+"coco/model.json" },
             scoreThreshold: { value: 0.5 },
-            passthru: { value: false }
+            passthru: { value: false },
+            lineColour: { value: "magenta" }
         },
         inputs: 1,
         outputs: 1,
@@ -69,6 +74,19 @@
         icon: "tfjs.png",
         label: function() {
             return this.name || "tf coco ssd";
+        },
+        oneditprepare: function() {
+            if (this.lineColour === undefined) {
+                $("#node-input-lineColour").val("magenta");
+            }
+            $("#node-input-passthru").change( function() {
+                if ($("#node-input-passthru").val() === "bbox") {
+                    $("#node-bbox-colour").show();
+                }
+                else {
+                    $("#node-bbox-colour").hide();
+                }
+            });
         }
     });
 </script>
