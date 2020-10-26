@@ -71,13 +71,14 @@ module.exports = function (RED) {
             if (node.passthru === "bbox") {
                 var pimg = pureimage.make(jimg.width,jimg.height);
                 var ctx = pimg.getContext('2d');
+                var scale = parseInt((jimg.width + jimg.height) / 500 + 0.5);
                 ctx.bitmap.data = jimg.data;
                 for (var k=0; k<m.payload.length; k++) {
                     ctx.fillStyle = 'magenta';
                     ctx.strokeStyle = 'magenta';
-                    ctx.font = "32pt 'Source Sans Pro'";
-                    ctx.fillText(m.payload[k].class, m.payload[k].bbox[0] + 8, m.payload[k].bbox[1] + 24)
-                    ctx.lineWidth = 5;
+                    ctx.font = scale*8+"pt 'Source Sans Pro'";
+                    ctx.fillText(m.payload[k].class, m.payload[k].bbox[0] + 4, m.payload[k].bbox[1] - 4)
+                    ctx.lineWidth = scale;
                     ctx.lineJoin = 'bevel';
                     ctx.rect(m.payload[k].bbox[0], m.payload[k].bbox[1], m.payload[k].bbox[2], m.payload[k].bbox[3]);
                     ctx.stroke();
