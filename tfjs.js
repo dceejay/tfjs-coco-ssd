@@ -34,6 +34,9 @@ module.exports = function (RED) {
         loadFont();
 
         async function loadModel() {
+            if (node.modelUrl === "local") {
+                node.modelUrl = "http://localhost:"+RED.settings.uiPort+RED.settings.httpNodeRoot+"coco/model.json";
+            }
             node.model = await cocoSsd.load({modelUrl: node.modelUrl});
             node.ready = true;
             node.status({fill:'green', shape:'dot', text:'Model ready'});
