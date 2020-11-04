@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-tfjs-coco-ssd",
-    "version": "0.5.3",
+    "version": "0.5.4",
     "description": "A Node-RED node that uses tensorflowjs for object detection.",
     "dependencies": {
         "@tensorflow-models/coco-ssd": "2.0.3",
@@ -29,5 +29,8 @@
         "name": "Dave Conway-Jones",
         "email": "ceejay@vnet.ibm.com",
         "url": "http://nodered.org"
+    },
+    "scripts": {
+        "postinstall": "node fixwindll.js"
     }
 }
