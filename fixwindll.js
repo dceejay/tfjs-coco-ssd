@@ -2,8 +2,6 @@
 
 var os = require("os");
 var fs = require("fs");
-console.log("We are at",process.cwd());
-console.log("We dir at",__dirname);
 
 if (os.type() === "Windows_NT" ) {
     if (!fs.existsSync('../@tensorflow/tfjs-node/lib/napi-v5/tensorflow.dll')) {
