@@ -17,7 +17,7 @@ module.exports = function (RED) {
         var cocoSsd = require('@tensorflow-models/coco-ssd');
 
         RED.nodes.createNode(this, n);
-        this.scoreThreshold = n.scoreThreshould;
+        this.scoreThreshold = n.scoreThreshold;
         this.maxDetections = n.maxDetections;
         this.passthru = n.passthru || "false";
         this.modelUrl = n.modelUrl || undefined; // "http://localhost:1880/coco/model.json"
@@ -58,7 +58,7 @@ module.exports = function (RED) {
             if (node.passthru === "true") { m.image = m.payload; }
             var img = tf.node.decodeImage(m.payload);
 
-            m.maxDetections = m.maxDetections || node.maxDetections || 20;
+            m.maxDetections = m.maxDetections || node.maxDetections || 40;
             m.payload = await node.model.detect(img, m.maxDetections);
             m.shape = img.shape;
             m.classes = {};
