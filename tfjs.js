@@ -117,6 +117,9 @@ module.exports = function (RED) {
 
         node.on("close", function () {
             node.status({});
+            node.ready = false;
+            node.model = null;
+            node.fnt = null;
         });
     }
     RED.nodes.registerType("tensorflowCoco", TensorFlowCoCo);
