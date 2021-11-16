@@ -23,6 +23,7 @@ module.exports = function (RED) {
         this.modelUrl = n.modelUrl || undefined; // "http://localhost:1880/coco/model.json"
         this.lineColour = n.lineColour || "magenta";
         var node = this;
+        var model;
 
         RED.httpNode.use(compression());
         RED.httpNode.use('/coco', express.static(__dirname + '/models/coco-ssd'));
@@ -37,7 +38,7 @@ module.exports = function (RED) {
             if (node.modelUrl === "local") {
                 node.modelUrl = "http://localhost:"+RED.settings.uiPort+RED.settings.httpNodeRoot+"coco/model.json";
             }
-            node.model = await cocoSsd.load({modelUrl: node.modelUrl});
+            model = await cocoSsd.load({modelUrl: node.modelUrl});
             node.ready = true;
             node.status({fill:'green', shape:'dot', text:'Model ready'});
         }
@@ -59,7 +60,7 @@ module.exports = function (RED) {
             var img = tf.node.decodeImage(m.payload);
 
             m.maxDetections = m.maxDetections || node.maxDetections || 40;
-            m.payload = await node.model.detect(img, m.maxDetections);
+            m.payload = await model.detect(img, m.maxDetections);
             m.shape = img.shape;
             m.classes = {};
             m.scoreThreshold = m.scoreThreshold || node.scoreThreshold || 0.5;
@@ -118,7 +119,8 @@ module.exports = function (RED) {
         node.on("close", function () {
             node.status({});
             node.ready = false;
-            node.model = null;
+            model.dispose();
+            model = null;
             node.fnt = null;
         });
     }

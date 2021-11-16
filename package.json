@@ -1,12 +1,12 @@
 {
     "name": "node-red-contrib-tfjs-coco-ssd",
-    "version": "0.5.7",
+    "version": "1.0.0",
     "description": "A Node-RED node that uses tensorflowjs for object detection.",
     "dependencies": {
-        "@tensorflow-models/coco-ssd": "2.0.3",
-        "@tensorflow/tfjs-node": "1.4.0",
+        "@tensorflow-models/coco-ssd": "2.2.2",
+        "@tensorflow/tfjs-node": "3.11.0",
         "compression": "^1.7.4",
-        "pureimage": "^0.2.5",
+        "pureimage": "^0.3.5",
         "express": "^4.16.4"
     },
     "repository": {
@@ -21,6 +21,7 @@
         "tfjs"
     ],
     "node-red": {
+        "version": ">=1.0.0",
         "nodes": {
             "tensorflowCoco": "tfjs.js"
         }
@@ -31,6 +32,9 @@
         "url": "http://nodered.org"
     },
     "scripts": {
-        "postinstall": "node fixwindll.js"
+        "install": "npm rebuild @tensorflow/tfjs-node --build-from-source"
+    },
+    "engines": {
+        "node": ">=12"
     }
 }
