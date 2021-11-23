@@ -70,7 +70,9 @@ module.exports = function (RED) {
                     m.payload.splice(i,1);
                     i = i - 1;
                 }
-                m.classes[m.payload[i].class] = (m.classes[m.payload[i].class] || 0 ) + 1;
+                if (m.payload[i].hasOwnProperty("class")) {
+                    m.classes[m.payload[i].class] = (m.classes[m.payload[i].class] || 0 ) + 1;
+                }
             }
 
             if (node.passthru === "bbox") {
