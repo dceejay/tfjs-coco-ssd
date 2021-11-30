@@ -62,7 +62,7 @@
         category: 'analysis-function',
         defaults: {
             name: { value: "" },
-            modelUrl: { value: "http://localhost:"+(RED.settings.uiPort||1880)+RED.settings.httpNodeRoot+"coco/model.json" },
+            modelUrl: { value: (location.origin||"http://localhost:1880")+RED.settings.httpNodeRoot+"coco/model.json" },
             scoreThreshold: { value: 0.5 },
             passthru: { value: "false" },
             lineColour: { value: "magenta" }
