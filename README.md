@@ -11,6 +11,11 @@ Either use the Node-RED Menu - Manage Palette option, or run the following comma
 
     npm i node-red-contrib-tfjs-coco-ssd
 
+On a Pi - you will also need to run this command after the main install.
+
+    cd ~/.node-red
+    npm rebuild @tensorflow/tfjs-node --build-from-source
+
 ## Overview
 
 This node runs the CoCo Single Shot object detector on a ***jpeg image***, delivered via an ```msg.payload``` in one of the following formats:
