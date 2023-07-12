@@ -69,6 +69,7 @@ module.exports = function (RED) {
                 if (m.payload[i].score < m.scoreThreshold) {
                     m.payload.splice(i,1);
                     i = i - 1;
+                    continue;
                 }
                 if (m.payload[i].hasOwnProperty("class")) {
                     m.classes[m.payload[i].class] = (m.classes[m.payload[i].class] || 0 ) + 1;
